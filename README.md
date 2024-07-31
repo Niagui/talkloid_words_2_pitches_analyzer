@@ -7,7 +7,7 @@ To install dependencies, run:
 
 ``pip install -r requirements.txt``
 
-Run ``pitchAnalyzer`` to use the program. All the audio will be and should be saved in the ``audio`` subfolder. If the result if off pretty badly, consider adjusting the parameters of the 
+Run ``pitchAnalyzer`` to use the program. **All the related audio files will be and should be placed in the ``audio`` subfolder (You can change that in the main function).**  If the result if off pretty badly, consider adjusting the parameters of the 
 ``split_on_silence`` function: https://github.com/jiaaro/pydub/blob/master/pydub/silence.py
 
 
