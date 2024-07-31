@@ -10,7 +10,7 @@ def freqToNote(freq: int | float) -> str:
         freq (int | float): Any frequency 
 
     Returns:
-        str: [pitch + octave]
+        str: [pitch + octave] combination
     """
     notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
     midi = int(12 * np.log2(freq / 440.0) + 69)
