@@ -1,7 +1,7 @@
 This is a sketchy personal project to help with talkloid creation. It uses the google cloud tts api to generate speaking audio, the convert it to pitches that could be used in vocaloid music production. <br>
 You can record your own voice for the pitch detection or use already existing audio files. The result may not be very accurate, but it should be good enough.
 
-#Instruction
+# Instruction
 
 To install dependencies, run:
 
