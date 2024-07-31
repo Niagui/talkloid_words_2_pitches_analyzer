@@ -1,7 +1,7 @@
-gtts
-pydub
-SpeechRecognition
-librosa
-google-cloud-texttospeech
-scipy
-sounddevice
+gtts==2.5.2
+pydub==0.25.1
+SpeechRecognition==3.10.4
+librosa==0.10.2
+google-cloud-texttospeech==2.16.5
+scipy==1.14.0
+sounddevice==0.4.7
