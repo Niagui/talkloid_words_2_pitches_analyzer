@@ -1,5 +1,4 @@
 import os, io
-import numpy as np
 import speech_recognition as sr
 from pydub import AudioSegment
 from pydub.silence import split_on_silence
@@ -37,19 +36,10 @@ def getAudioFromTTS(phrase, filename='audio/output.wav'):
 
 #this thingy should give you all the words
 def detectWords(audio_path:str) -> list[tuple[str, int|float, int|float]]:
-    """
-
-    Args:
-        audio_path (str): path to your audio
-    
-    Returns:
-        timestamps: list of words with their begin and end times
-
-    """
 
     recognizer = sr.Recognizer()
     audio = AudioSegment.from_wav(audio_path)
-    audioSegments = split_on_silence(audio, min_silence_len=500, silence_thresh=-40)   #attempt to split words
+    audioSegments = split_on_silence(audio, min_silence_len=350, silence_thresh=-40)   #attempt to split words
 
     timestamps = []
     curTime = 0
@@ -65,12 +55,13 @@ def detectWords(audio_path:str) -> list[tuple[str, int|float, int|float]]:
                 words = recognizer.recognize_sphinx(audio).split()      #get words
                 segmentLen = len(audioSegment)/1000                     #get length of each phrase/sentence
                 wordLen = round((segmentLen / len(words)), 4)           #get average length of a word
-                print(words)
                 for word in words:
                     timestamps.append((word, curTime, round((curTime + wordLen), 4)))
                     curTime += wordLen
             except LookupError:
                 print("Look up Error: Could not understand audio")
+            except ZeroDivisionError:
+                print("Empty segment detected... keep moving")
     return timestamps
 
 
@@ -95,30 +86,34 @@ def extract_syllables(audio_path: str):
     audio = AudioSegment.from_wav(audio_path)
     
     for word, start, end in timestamps:
-        print(word, start*1000, end*1000)
-        syllables = segment_into_syllables(word)
-        #print(f"Word: {word}, Syllables: {syllables}")
-        
-        #take average syllable len (not very accurate tho)
-        syllable_pitches = []
-        word_audio = audio[(start*1000):(end*1000)]
-        syllable_Len = (end - start) / len(syllables)
-        
-        for i, syllable in enumerate(syllables):
-            syllable_start = i * syllable_Len
-            syllable_end = (i + 1) * syllable_Len
-            syllable_audio_segment = word_audio[(syllable_start*1000):(syllable_end*1000)]
+        try:
+            #print(word, start*1000, end*1000)
+            syllables = segment_into_syllables(word)
+            #print(f"Word: {word}, Syllables: {syllables}")
+            
+            #take average syllable len (not very accurate tho)
+            syllable_pitches = []
+            word_audio = audio[(start*1000):(end*1000)]
+            syllable_Len = (end - start) / len(syllables)
+            
+            for i, syllable in enumerate(syllables):
+                syllable_start = i * syllable_Len
+                syllable_end = (i + 1) * syllable_Len
+                syllable_audio_segment = word_audio[(syllable_start*1000):(syllable_end*1000)]
 
-            buffer = io.BytesIO()
-            syllable_audio_segment.export(buffer, format='wav')
-            buffer.seek(0)
-            y, sr = librosa.load(buffer, sr=None)
-            pitch_list = detectPitches(y)
-            syllable_pitches.append((syllable, pitch_list)) if pitch_list else 0
+                buffer = io.BytesIO()
+                syllable_audio_segment.export(buffer, format='wav')
+                buffer.seek(0)
+                y, sr = librosa.load(buffer, sr=None)
+                pitch_list = detectPitches(y)
+                if pitch_list:
+                    syllable_pitches.append((syllable, pitch_list))
+                else:
+                    syllable_pitches.append("undetected")
+        except ZeroDivisionError:
+            print("Fail to detect a syllable...")
         
-        print(f"Word: {word}\nSyllable Pitches: {syllable_pitches}\n")
-
-
+        print(f"Word: {word}\nSyllable -- Pitches: {syllable_pitches}\n")
 
 
 
@@ -135,6 +130,8 @@ def pitch_analysis():
 
 if __name__ == '__main__':
 
+    #user interface
+
     print("\nThis is a pitch analyser that breaks down a spoken phrase into syllables and their corresponding pitches.\n"+
           "this is designed to assist making talkaloids withint vocaloid and other vocal synthesizers\n\n")
     
@@ -143,6 +140,7 @@ if __name__ == '__main__':
                   "Enter anything else to use a TTS(text to speech) speaker from google: ")
     if option == '1':
         path = input("Enter audio path (with format):")
+        path = 'audio/' + path
         extract_syllables(path)
     elif option == '2':
         duration = int(input("how long would you like to record (in seconds)?"))

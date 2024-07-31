@@ -2,16 +2,14 @@ import sounddevice as sd
 import numpy as np
 import scipy.io.wavfile as wav
 
-RECORD_DURATION = 5
-
-def record_audio(filename, duration, fs=44100):
+def record_audio(filename, duration=10, fs=44100):
     """
     Record audio from your mic and save it as a .wav file. 
     Change the recod duration constant to change how long you wanna record
 
     Arguments:
         filename: The name of the output .wav file
-        duration: Duration of the recording in seconds (default is 5 seconds)
+        duration: Duration of the recording in seconds (default is 10 seconds)
         fs: Sampling rate (default is 44100 Hz)
 
     """
@@ -25,10 +23,12 @@ def record_audio(filename, duration, fs=44100):
     wav.write(filename, fs, audio)
     print(f"Audio saved to {filename}")
 
+
+
+
+
 if __name__ == "__main__":
-    # Specify the output file name and duration
     print("Enter filename:")
     userinput = input() 
     output_filename = userinput + '.wav'
-    
-    record_audio(output_filename, duration=RECORD_DURATION)
+    record_audio(output_filename)
