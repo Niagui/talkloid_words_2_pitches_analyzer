@@ -16,6 +16,6 @@ Run ``pitchAnalyzer`` to use the program. **All the related audio files will be 
 ![image](https://github.com/user-attachments/assets/9bd07a02-8d2a-4e18-a84e-1d1f481b42c7) <br>
 Meet miku, our lord and savior.
 
-If you need more information, please feel free to email n2iagu2i@gmail.com
+If you need more information, please feel free to shoot me an email at n2iagu2i@gmail.com
 
 
